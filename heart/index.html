@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>Cốc cốc… bạn có một món quà 🎁</title>
+    <meta name="description" content="Có người gửi bạn một tấm thiệp nho nhỏ. Chạm vào để mở xem nhé ❤" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Cốc cốc… bạn có một món quà 🎁" />
+    <meta property="og:description" content="Có người gửi bạn một tấm thiệp nho nhỏ. Chạm vào để mở xem nhé ❤" />
+    <meta property="og:image" content="https://cdn.shopify.com/s/files/1/0757/9700/4572/files/tim.png?v=1767367148" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://cdn.shopify.com/s/files/1/0757/9700/4572/files/tim.png?v=1767367148" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Lobster&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div id="stage" class="stage">
+      <canvas id="scene"></canvas>
+      <div id="overlay" class="overlay"></div>
+
+      <div id="hint" class="ah-hint" hidden>Chạm vào trái tim để mở thư 💌</div>
+
+      <audio id="music" loop preload="auto" hidden>
+        <source src="./music.mp3" type="audio/mpeg" />
+      </audio>
+
+      <button id="musicBtn" type="button" class="ah-music" aria-label="Bật nhạc" aria-pressed="false">
+        <svg class="ah-music-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M9 18V5l10-2v13" />
+          <circle cx="6" cy="18" r="3" />
+          <circle cx="16" cy="16" r="3" />
+          <line id="musicSlash" x1="3" y1="3" x2="21" y2="21" />
+        </svg>
+      </button>
+
+      <div id="letterRoot"></div>
+      <div id="photoRoot"></div>
+    </div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.169.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.169.0/examples/jsm/"
+        }
+      }
+    </script>
+    <script src="./config.js"></script>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

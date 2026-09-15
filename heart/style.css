@@ -1,0 +1,539 @@
+/* ==========================================================================
+   Trái tim 3D — bản HTML/CSS/JS thuần
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #000;
+  color: #fff;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  font-family: "Cormorant Garamond", Georgia, serif;
+}
+
+.stage {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  touch-action: none;
+}
+
+#scene {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+}
+
+/* Lớp chữ và ảnh bay — vẽ bằng DOM, được chiếu theo toạ độ 3D mỗi khung hình */
+.overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 5;
+}
+
+.fl {
+  position: absolute;
+  top: 0;
+  left: 0;
+  will-change: transform, opacity;
+  transform-origin: center center;
+  opacity: 0;
+  user-select: none;
+}
+
+.fl-text {
+  white-space: nowrap;
+  font-family: "Lobster", cursive;
+  font-weight: 400;
+  text-shadow: 0 0 8px #ff80b0, 0 0 8px #ff6090;
+  pointer-events: none;
+}
+
+.fl-photo img {
+  display: block;
+  object-fit: cover;
+  border-radius: 8px;
+  pointer-events: auto;
+  cursor: zoom-in;
+  box-shadow: 0 0 16px rgba(255, 128, 176, 0.6), 0 0 16px rgba(255, 96, 144, 0.4);
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+/* --------------------------------------------------------------- Gợi ý chạm */
+.ah-hint {
+  position: absolute;
+  left: 50%;
+  bottom: max(8vh, calc(env(safe-area-inset-bottom) + 3.5rem));
+  transform: translateX(-50%);
+  z-index: 12;
+  padding: 0 1.2rem;
+  text-align: center;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(0.95rem, 3.6vw, 1.15rem);
+  letter-spacing: 0.04em;
+  color: rgba(255, 226, 235, 0.86);
+  text-shadow: 0 0 12px rgba(255, 110, 150, 0.55);
+  pointer-events: none;
+  animation: ah-hint-in 1.4s ease forwards, ah-hint-breathe 3.2s ease-in-out 1.4s infinite;
+  opacity: 0;
+}
+
+@keyframes ah-hint-in {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes ah-hint-breathe {
+  0%,
+  100% {
+    opacity: 0.65;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* ----------------------------------------------------------- Nút bật nhạc */
+.ah-music {
+  position: absolute;
+  top: max(1rem, env(safe-area-inset-top));
+  right: max(1rem, env(safe-area-inset-right));
+  z-index: 15;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 170, 195, 0.35);
+  background: rgba(30, 6, 18, 0.42);
+  backdrop-filter: blur(6px);
+  color: #ffd9e6;
+  cursor: pointer;
+  opacity: 0.55;
+  transition: opacity 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.ah-music:hover,
+.ah-music:focus-visible {
+  opacity: 1;
+  transform: scale(1.06);
+}
+
+.ah-music.is-on {
+  opacity: 0.85;
+  box-shadow: 0 0 18px rgba(255, 120, 160, 0.45);
+}
+
+.ah-music.is-on .ah-music-icon {
+  animation: ah-music-beat 2s ease-in-out infinite;
+}
+
+.ah-music-icon {
+  width: 1.35rem;
+  height: 1.35rem;
+  filter: drop-shadow(0 0 6px rgba(255, 130, 170, 0.7));
+}
+
+@keyframes ah-music-beat {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.14);
+  }
+}
+
+/* ------------------------------------------------------------------- Lá thư */
+.ll-root,
+.ll-card {
+  box-sizing: border-box;
+}
+
+.ll-root {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  padding: max(2.5vh, env(safe-area-inset-top)) max(3vw, env(safe-area-inset-right))
+    max(2.5vh, env(safe-area-inset-bottom)) max(3vw, env(safe-area-inset-left));
+  z-index: 10;
+  cursor: pointer;
+}
+
+.ll-card {
+  position: relative;
+  width: 100%;
+  max-width: 470px;
+  max-height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  cursor: default;
+  text-align: left;
+  padding: clamp(1.5em, 4.5vw, 2.2em) clamp(1.2em, 5vw, 2em) clamp(1.6em, 5vw, 2.2em);
+  border-radius: 20px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(30, 9, 17, 0.66) 0%,
+    rgba(22, 6, 13, 0.5) 60%,
+    rgba(18, 4, 10, 0.1) 100%
+  );
+  backdrop-filter: blur(2px);
+  font-family: "Dancing Script", "Segoe Script", cursive;
+  color: #fff2e6;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.65), 0 0 18px rgba(255, 120, 90, 0.32);
+  -webkit-overflow-scrolling: touch;
+}
+
+.ll-row {
+  line-height: 1.5;
+}
+
+.ll-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.ll-ch {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.22em) rotate(-4deg);
+  filter: blur(4px);
+  animation: ll-write 0.55s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+}
+
+.ll-greeting {
+  font-size: clamp(1.6rem, 6.4vw, 2.25rem);
+  font-weight: 600;
+  color: #ffe1cf;
+  margin-bottom: 0.45em;
+}
+
+.ll-line {
+  font-size: clamp(1.22rem, 5vw, 1.5rem);
+  font-weight: 500;
+}
+
+.ll-space {
+  height: 0.6em;
+}
+
+.ll-signature {
+  font-size: clamp(1.45rem, 5.8vw, 1.9rem);
+  font-weight: 600;
+  margin-top: 0.9em;
+  text-align: right;
+  color: #ffd9c2;
+}
+
+.ll-photo {
+  display: block;
+  width: min(72%, 225px);
+  margin: 0 auto 1.3em;
+  padding: 0.55em 0.55em 0.2em;
+  background: linear-gradient(160deg, rgba(255, 244, 232, 0.94), rgba(248, 226, 212, 0.88));
+  border-radius: 4px;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.55), 0 0 26px rgba(255, 140, 110, 0.28);
+  opacity: 0;
+  transform: rotate(-2.5deg) scale(0.9);
+  animation: ll-photo-in 1s cubic-bezier(0.2, 0.8, 0.3, 1.05) 0.15s forwards;
+}
+
+.ll-photo img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 2px;
+  background: rgba(40, 20, 28, 0.5);
+}
+
+.ll-photo figcaption {
+  margin-top: 0.4em;
+  padding-bottom: 0.2em;
+  font-size: clamp(0.95rem, 3.8vw, 1.1rem);
+  font-weight: 600;
+  text-align: center;
+  color: #7d4a44;
+  text-shadow: none;
+}
+
+.ll-x {
+  position: sticky;
+  top: 0;
+  float: right;
+  margin: -0.4em -0.3em 0 0.4em;
+  width: 2em;
+  height: 2em;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(1rem, 4vw, 1.15rem);
+  line-height: 1;
+  color: #ffd8cb;
+  background: rgba(56, 17, 27, 0.92);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 180, 170, 0.4);
+  border-radius: 50%;
+  cursor: pointer;
+  backdrop-filter: blur(3px);
+  transition: background 0.2s ease, transform 0.2s ease;
+  z-index: 2;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ll-x:hover {
+  background: rgba(255, 120, 140, 0.35);
+  transform: scale(1.08);
+}
+
+.ll-close {
+  opacity: 0;
+  animation: ll-fade 1s ease forwards;
+  display: block;
+  margin: 1.6em auto 0;
+  padding: 0.5em 1.5em;
+  font-family: inherit;
+  font-size: clamp(1.05rem, 4.4vw, 1.25rem);
+  color: #fff4ea;
+  background: rgba(70, 22, 34, 0.55);
+  border: 1px solid rgba(255, 180, 170, 0.35);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.ll-close:hover {
+  background: rgba(255, 120, 140, 0.32);
+  transform: scale(1.04);
+}
+
+@media (pointer: coarse) {
+  .ll-x {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .ll-close {
+    min-height: 44px;
+    padding: 0.65em 1.6em;
+  }
+  .ll-card {
+    backdrop-filter: none;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(30, 9, 17, 0.82) 0%,
+      rgba(22, 6, 13, 0.7) 60%,
+      rgba(18, 4, 10, 0.34) 100%
+    );
+  }
+}
+
+@media (min-width: 640px) {
+  .ll-card {
+    max-width: 600px;
+    padding: 2.3em 2.4em 2.5em;
+  }
+  .ll-photo {
+    width: min(64%, 265px);
+  }
+}
+
+@media (min-width: 1024px) {
+  .ll-card {
+    max-width: 680px;
+    padding: 2.6em 2.8em 2.8em;
+  }
+  .ll-greeting {
+    font-size: 2.5rem;
+  }
+  .ll-line {
+    font-size: 1.62rem;
+  }
+  .ll-signature {
+    font-size: 2.05rem;
+  }
+  .ll-photo {
+    width: min(58%, 295px);
+  }
+}
+
+@media (max-height: 560px) {
+  .ll-card {
+    padding: 1.1em 1.3em 1.4em;
+    border-radius: 16px;
+  }
+  .ll-greeting {
+    font-size: clamp(1.2rem, 5.4vh, 1.6rem);
+    margin-bottom: 0.3em;
+  }
+  .ll-line {
+    font-size: clamp(1rem, 4vh, 1.28rem);
+  }
+  .ll-signature {
+    font-size: clamp(1.1rem, 4.8vh, 1.45rem);
+    margin-top: 0.6em;
+  }
+  .ll-space {
+    height: 0.4em;
+  }
+  .ll-photo {
+    width: min(40%, 170px);
+    margin-bottom: 0.9em;
+  }
+  .ll-photo figcaption {
+    font-size: 0.9rem;
+  }
+  .ll-close {
+    margin-top: 1.1em;
+    font-size: 1.05rem;
+  }
+}
+
+@keyframes ll-write {
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg);
+    filter: blur(0);
+  }
+}
+
+@keyframes ll-photo-in {
+  to {
+    opacity: 1;
+    transform: rotate(-2.5deg) scale(1);
+  }
+}
+
+@keyframes ll-fade {
+  to {
+    opacity: 1;
+  }
+}
+
+/* ------------------------------------------------------------ Ảnh phóng to */
+.pl-root {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: max(4vh, env(safe-area-inset-top)) max(4vw, env(safe-area-inset-right))
+    max(4vh, env(safe-area-inset-bottom)) max(4vw, env(safe-area-inset-left));
+  z-index: 20;
+  cursor: zoom-out;
+  background: radial-gradient(ellipse at center, rgba(20, 4, 10, 0.72) 0%, rgba(8, 2, 5, 0.9) 100%);
+  backdrop-filter: blur(3px);
+  animation: pl-in 0.28s ease forwards;
+}
+
+.pl-frame {
+  position: relative;
+  max-width: 100%;
+  cursor: default;
+  padding: clamp(0.5em, 1.6vw, 0.9em);
+  border-radius: 14px;
+  background: linear-gradient(160deg, rgba(255, 244, 232, 0.14), rgba(255, 200, 190, 0.08));
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.7), 0 0 50px rgba(255, 120, 110, 0.22);
+  animation: pl-rise 0.34s cubic-bezier(0.2, 0.8, 0.3, 1.02) forwards;
+}
+
+.pl-frame img {
+  display: block;
+  max-width: min(88vw, 900px);
+  max-height: 78vh;
+  max-height: 78dvh;
+  width: auto;
+  height: auto;
+  border-radius: 8px;
+}
+
+.pl-x {
+  position: absolute;
+  top: -0.7em;
+  right: -0.7em;
+  width: 2.2em;
+  height: 2.2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(1rem, 4vw, 1.15rem);
+  line-height: 1;
+  color: #ffd8cb;
+  background: rgba(60, 20, 30, 0.85);
+  border: 1px solid rgba(255, 180, 170, 0.45);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.pl-x:hover {
+  background: rgba(255, 120, 140, 0.4);
+  transform: scale(1.08);
+}
+
+@media (pointer: coarse) {
+  .pl-x {
+    min-width: 44px;
+    min-height: 44px;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@keyframes pl-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pl-rise {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ll-ch,
+  .ll-photo,
+  .ll-close,
+  .pl-root,
+  .pl-frame {
+    animation-duration: 0.01s;
+  }
+  .ah-music.is-on .ah-music-icon {
+    animation: none;
+  }
+}

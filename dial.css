@@ -1,0 +1,150 @@
+/* ---------- dial scene (quay số ngày sinh nhật) — thêm vào sau khi gạt công tắc ---------- */
+.lg-dial {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--room-gradient, radial-gradient(circle at 50% 40%, #16121f, #0b0a14));
+  animation: dialFadeIn 0.6s both;
+}
+.lg-dial.is-out {
+  animation: dialFadeOut 0.7s forwards;
+}
+.dial-stars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  animation: dialFadeIn 0.9s 2.8s both;
+}
+.dial-star {
+  position: absolute;
+  color: #e8cf94;
+  animation: dialTwinkle 2.6s ease-in-out infinite;
+}
+.dial-balloon-wrap {
+  position: absolute;
+  right: 14%;
+  top: 16%;
+  pointer-events: none;
+  animation: dialFadeIn 0.9s 2.8s both;
+}
+.dial-balloon-wrap.is-left {
+  right: auto;
+  left: 12%;
+  top: 26%;
+}
+.dial-balloon {
+  transform-origin: 50% 100%;
+  animation: dialBalloonFloat 4s ease-in-out infinite;
+}
+.dial-window {
+  position: relative;
+  height: 304px;
+  width: min(360px, 92vw);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 26%, #000 74%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 26%, #000 74%, transparent 100%);
+}
+.dial-reel {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  --reel-from: -190px;
+  --reel-to: -1254px;
+  will-change: transform;
+  animation: dialReelSpin 2.1s cubic-bezier(0.16, 0.84, 0.24, 1) forwards;
+}
+.dial-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 76px;
+  font-size: clamp(38px, 11vw, 60px);
+  color: #f5efe6cc;
+}
+.dial-overlay {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: max-content;
+}
+.dial-glow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: -1;
+  width: 230px;
+  height: 230px;
+  border-radius: 999px;
+  background: radial-gradient(circle, #ffce7880 0%, #ffb4502e 42%, #ffb45000 70%);
+  animation: dialGlowIn 0.85s ease-out 2.05s both;
+}
+.dial-arrow {
+  color: #e8cf94;
+  font-size: clamp(26px, 7vw, 44px);
+  animation: dialArrowIn 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) 2.3s both;
+}
+.dial-day {
+  font-size: clamp(72px, 22vw, 128px);
+  line-height: 1;
+  color: #f4d68a;
+  text-shadow: 0 0 30px #ffce7899;
+  animation: dialPop 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) 2.05s both;
+}
+.dial-month {
+  align-self: flex-end;
+  padding-bottom: 8px;
+  white-space: nowrap;
+  color: #f7f1e6;
+  font-size: clamp(20px, 6vw, 34px);
+  animation: dialMonthIn 0.6s 2.4s both;
+}
+@keyframes dialFadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes dialFadeOut { to { opacity: 0; } }
+@keyframes dialTwinkle {
+  0%, 100% { opacity: 0.3; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+@keyframes dialBalloonFloat {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-6px) rotate(2deg); }
+}
+@keyframes dialReelSpin {
+  0% { transform: translateY(var(--reel-from)); filter: blur(8px); }
+  35% { filter: blur(4px); }
+  60% { filter: blur(0); }
+  100% { transform: translateY(var(--reel-to)); filter: blur(0); }
+}
+@keyframes dialPop {
+  0% { opacity: 0; transform: scale(0.4); }
+  60% { opacity: 1; transform: scale(1.16); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes dialGlowIn {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.4); }
+  60% { opacity: 1; transform: translate(-50%, -50%) scale(1.15); }
+  100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+@keyframes dialArrowIn {
+  from { opacity: 0; transform: translateX(-22px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes dialMonthIn {
+  from { opacity: 0; transform: translateX(16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dial-reel { transform: translateY(var(--reel-to)); animation: none; }
+  .dial-day, .dial-glow, .dial-arrow, .dial-month, .dial-stars, .dial-balloon-wrap {
+    animation-duration: 0.4s;
+    animation-delay: 0.1s;
+  }
+}
