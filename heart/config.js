@@ -40,6 +40,12 @@ window.heartConfig = {
     "./images/photos/photo-28.jpg",
     "./images/photos/photo-29.jpg",
     "./images/photos/photo-30.jpg",
+    "./images/photos/photo-31.jpg",
+    "./images/photos/photo-32.jpg",
+    "./images/photos/photo-33.jpg",
+    "./images/photos/photo-34.jpg",
+    "./images/photos/photo-35.jpg",
+    "./images/photos/photo-36.jpg",
   ],
 
   heartColor: "rgb(255, 5, 5)",
