@@ -1,13 +1,14 @@
 // Cấu hình nội dung — chỉnh sửa tại đây là toàn bộ trang đổi theo.
 window.heartConfig = {
   messages: [
-    "Anh yêu em",
-    "Cô gái bé nhỏ của anh",
-    "Có em, ngày nào cũng đẹp",
-    "Bình yên của anh là em",
-    "Cảm ơn em đã đến",
-    "Yêu em, hôm nay và mãi sau ❤",
+    "Chúc cậu tuổi mới thật vui ❤️",
+    "Mong cậu luôn bình an",
+    "Mong những điều tốt đẹp sẽ đến với cậu",
+    "Cậu nhớ chăm sóc bản thân nhé 🌷",
+    "Mong cậu luôn được yêu thương",
+    "Chúc cậu một tuổi mới thật đẹp 🎂❤️",
   ],
+
   images: [
     "./images/photos/photo-1.jpg",
     "./images/photos/photo-2.jpg",
@@ -40,24 +41,46 @@ window.heartConfig = {
     "./images/photos/photo-29.jpg",
     "./images/photos/photo-30.jpg",
   ],
+
   heartColor: "rgb(255, 5, 5)",
   textColor: "rgba(255, 107, 156, 0.58)",
   miniHeartColor: "rgb(255, 112, 146)",
   music: "./music.mp3",
+
   letter: {
-    greeting: "Gửi em yêu của anh,",
+    greeting: "Gửi cậu,",
     lines: [
-      "Giữa hàng ngàn đốm sáng lấp lánh kia, có một đốm mang tên em — sáng nhất, và luôn ở gần trái tim anh nhất.",
+      "Chúc cậu sinh nhật thật vui và tuổi mới thật nhiều bình an nhé 🎂❤️ Tớ mong những điều tốt đẹp nhất sẽ đến với cậu, mong con đường cậu chọn sau này sẽ bớt gập ghềnh hơn một chút, để cậu có thể bước đi nhẹ nhàng hơn và gặp được nhiều điều khiến cậu mỉm cười.",
+
       "",
-      "Anh không giỏi làm thơ, cũng chẳng khéo nói, nên anh gói cả bầu trời đêm nay lại, chỉ để thì thầm với em một điều thôi:",
+
+      "Tớ mong cậu vẫn luôn kiên cường, nhưng không cần lúc nào cũng phải quá mạnh mẽ. Nếu có những ngày mệt mỏi hay yếu lòng thì cũng không sao cả, cứ cho mình một chút thời gian để nghỉ ngơi rồi lại bước tiếp. Mong cậu đủ vững vàng để không ai có thể dễ dàng làm tổn thương cậu nữa, nhưng cũng mong cậu luôn giữ được sự dịu dàng và ấm áp vốn có của mình. 🌷",
+
       "",
-      "Cảm ơn em đã đến, đã ở lại bên anh, và biến những ngày rất đỗi bình thường thành cả một miền thương để anh nhớ mãi.",
+
+      "Cậu cũng nhớ chăm sóc bản thân thật tốt nhé. Ăn uống đầy đủ, ngủ sớm một chút, đừng làm việc quá sức và đừng vì bận rộn mà quên mất mình cũng cần được quan tâm. Cuộc đời còn rất nhiều mùa để đi qua, tớ mong mùa nào của cậu cũng có một chút dịu dàng. ☀️🍃",
+
       "",
-      "Anh yêu em — hôm nay, ngày mai, và tất cả những ngày sau nữa.",
+
+      "Tớ không biết những năm tháng phía trước sẽ đưa cậu đến đâu, nhưng tớ mong dù đi đến đâu, cậu cũng sẽ gặp được những người thật lòng thương cậu, những điều xứng đáng với những gì cậu đã cố gắng và thật nhiều lý do để cậu cảm thấy vui vì cuộc sống này. Mong cậu luôn bình an, luôn được yêu thương và nếu có những ngày không vui thì cũng sẽ nhanh chóng có một điều gì đó thật nhỏ bé đến bên cạnh, làm cậu mỉm cười.",
+
+      "",
+
+      "Tuổi mới rồi, mong cậu sống thật vui, làm những điều mình thích và thương bản thân mình nhiều hơn một chút nhé. Chúc cậu có một sinh nhật thật ấm áp và một tuổi mới thật đẹp. 🎂❤️",
     ],
-    signature: "Mãi là của em, Anh ❤",
+
+    signature: "Tớ luôn mong cậu bình an ❤️",
+
     hint: "Chạm vào trái tim để mở thư 💌",
+
     photo: "./images/photos/photo-1.jpg",
   },
-  sky: { stars: true, snow: true, fireworks: true, shootingStars: true, drift: true },
+
+  sky: {
+    stars: true,
+    snow: true,
+    fireworks: true,
+    shootingStars: true,
+    drift: true,
+  },
 };
