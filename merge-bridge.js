@@ -62,6 +62,20 @@
 
     // Tắt nhạc và ẩn hẳn phần sinh nhật để không còn tiếng hay hiệu ứng chạy ngầm
     stopPageMedia(document);
+    try {
+      if (window.__hbStopMusic) window.__hbStopMusic();
+    } catch (_) {}
+
+    // Bật ngay nhạc trái tim từ màn "giữ để bắt đầu", giữ liền mạch sang heart
+    try {
+      if (!window.__hbHeartAudio) {
+        var ha = new Audio("heart/music.mp3");
+        ha.loop = true;
+        ha.volume = 0.6;
+        window.__hbHeartAudio = ha;
+      }
+      window.__hbHeartAudio.play().catch(function () {});
+    } catch (_) {}
 
     var host = ensureLayer();
     host.style.display = "block";
@@ -94,7 +108,7 @@
     try {
       if (old && old.contentDocument) stopPageMedia(old.contentDocument);
     } catch (_) {}
-    var f = makeFrame("heart/index.html", "Trái tim yêu thương");
+    var f = makeFrame("heart/index.html?music=parent", "Trái tim yêu thương");
     f.style.zIndex = "2";
     host.appendChild(f);
     f.addEventListener("load", function () {

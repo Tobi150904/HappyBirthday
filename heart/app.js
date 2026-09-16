@@ -1042,10 +1042,16 @@ stage.addEventListener("pointerup", (e) => {
 });
 
 /* ------------------------------------------------------------------- Nhạc */
-const audio = document.getElementById("music");
+const __parentMusic =
+  /[?&]music=parent/.test(location.search) &&
+  window.parent &&
+  window.parent.__hbHeartAudio
+    ? window.parent.__hbHeartAudio
+    : null;
+const audio = __parentMusic || document.getElementById("music");
 const musicBtn = document.getElementById("musicBtn");
 const musicSlash = document.getElementById("musicSlash");
-if (cfg.music) audio.querySelector("source").src = cfg.music;
+if (!__parentMusic && cfg.music) audio.querySelector("source").src = cfg.music;
 let userPaused = false;
 
 function syncMusicButton() {
@@ -1057,6 +1063,7 @@ function syncMusicButton() {
 }
 audio.addEventListener("play", syncMusicButton);
 audio.addEventListener("pause", syncMusicButton);
+syncMusicButton();
 
 const tryPlay = () => {
   if (!userPaused && audio.paused) audio.play().catch(() => {});
