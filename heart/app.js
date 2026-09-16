@@ -20,7 +20,6 @@ const overlay = document.getElementById("overlay");
 const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: "high-performance" });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setClearColor(0x000000, 0);
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -227,70 +226,6 @@ if (cfg.sky.snow !== false) {
   );
   snow.userData = { count, flakes };
   scene.add(snow);
-}
-
-/* -------------------------------------------- Dải sáng hồng giữa bầu trời */
-let pinkSky = null;
-let pinkGlow = null;
-if (!reduceMotion) {
-  const count = isMobile ? 1800 : 3600;
-  const pos = new Float32Array(count * 3);
-  const col = new Float32Array(count * 3);
-  const start = new THREE.Color("#ff77aa");
-  const middle = new THREE.Color("#ffb0ca");
-  const edge = new THREE.Color("#9f5ac4");
-
-  for (let i = 0; i < count; i++) {
-    const spread = Math.pow(Math.random(), 1.55);
-    const x = (Math.random() - 0.5) * 30;
-    const wave = Math.sin(x * 0.38) * 0.28;
-    const y = wave + (Math.random() - 0.5) * (0.35 + 2.8 * spread);
-    const z = -7 - 9 * Math.random();
-    pos[3 * i] = x;
-    pos[3 * i + 1] = y;
-    pos[3 * i + 2] = z;
-
-    const centerWeight = 1 - Math.min(1, Math.abs(x) / 15);
-    const color = start.clone().lerp(middle, centerWeight).lerp(edge, spread * 0.35);
-    const brightness = 0.55 + 0.85 * Math.random();
-    col[3 * i] = color.r * brightness;
-    col[3 * i + 1] = color.g * brightness;
-    col[3 * i + 2] = color.b * brightness;
-  }
-
-  const geo = new THREE.BufferGeometry();
-  geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
-  geo.setAttribute("color", new THREE.BufferAttribute(col, 3));
-  pinkSky = new THREE.Points(
-    geo,
-    new THREE.PointsMaterial({
-      size: isMobile ? 0.13 : 0.11,
-      map: texSoft,
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.54,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false,
-      sizeAttenuation: true,
-    }),
-  );
-  pinkSky.renderOrder = -12;
-  scene.add(pinkSky);
-
-  pinkGlow = new THREE.Sprite(
-    new THREE.SpriteMaterial({
-      map: texGlow,
-      color: new THREE.Color("#ff4f9a"),
-      transparent: true,
-      opacity: 0.2,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false,
-    }),
-  );
-  pinkGlow.position.set(0, 0, -9);
-  pinkGlow.scale.set(isMobile ? 10 : 14, isMobile ? 3.4 : 4.4, 1);
-  pinkGlow.renderOrder = -13;
-  scene.add(pinkGlow);
 }
 
 /* ------------------------------------------------------------ Tim nhỏ bay lên */
@@ -766,18 +701,6 @@ function updateHeart(t) {
 
 /* ---------------------------------------------------- Cập nhật nền bầu trời */
 function updateSky(t, dt) {
-  if (pinkSky) {
-    pinkSky.rotation.z = 0.012 * Math.sin(t * 0.12);
-    pinkSky.position.y = 0.12 * Math.sin(t * 0.22);
-    pinkSky.material.opacity = 0.48 + 0.08 * Math.sin(t * 0.45);
-  }
-
-  if (pinkGlow) {
-    const pulse = 1 + 0.06 * Math.sin(t * 0.7);
-    pinkGlow.scale.set((isMobile ? 10 : 14) * pulse, (isMobile ? 3.4 : 4.4) * pulse, 1);
-    pinkGlow.material.opacity = 0.18 + 0.05 * Math.sin(t * 0.55);
-  }
-
   if (stars) {
     const { count, twinkle, base } = stars.userData;
     stars.material.opacity = Math.min(t / 3, 1);
