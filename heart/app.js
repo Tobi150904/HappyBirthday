@@ -1166,6 +1166,8 @@ musicBtn.addEventListener("pointerup", (e) => {
 const clock = new THREE.Clock();
 let last = 0;
 
+let framesRendered = 0;
+
 function animate() {
   requestAnimationFrame(animate);
   const t = clock.getElapsedTime();
@@ -1177,8 +1179,18 @@ function animate() {
   updateFloaters(t);
   controls.update();
   composer.render();
+
+  // Báo cho trang cha biết trái tim đã vẽ xong khung đầu tiên, để nó mới
+  // hiện màn này lên (tránh hiện lúc scene còn đang dựng gây cảm giác lag).
+  framesRendered++;
+  if (framesRendered === 2) {
+    try {
+      parent.postMessage({ type: "lovegift:heartReady" }, "*");
+    } catch (_) {}
+  }
 }
 animate();
+
 
 /* ------------------------------------------------------------- Đổi kích thước */
 window.addEventListener("resize", () => {

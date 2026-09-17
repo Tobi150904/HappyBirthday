@@ -105,20 +105,45 @@
     current = "heart";
     var host = ensureLayer();
     var old = host.firstChild;
+
+    // Quan trọng: dừng hẳn cảnh bầu trời sao TRƯỚC khi dựng trái tim.
+    // Nếu để iframe intro chạy tiếp, nó vẫn ăn GPU/CPU nên trái tim khởi tạo
+    // bị giật và hiệu ứng tim bay lên bị rớt khung hình.
+    try {
+      if (old && old.contentWindow && old.contentWindow.__introStopEffects) {
+        old.contentWindow.__introStopEffects();
+      }
+    } catch (_) {}
     try {
       if (old && old.contentDocument) stopPageMedia(old.contentDocument);
     } catch (_) {}
+    // Ẩn ngay để trình duyệt khỏi vẽ, rồi xoá hẳn iframe intro (giải phóng WebGL).
+    try {
+      if (old) old.style.visibility = "hidden";
+    } catch (_) {}
+    window.setTimeout(function () {
+      try {
+        if (old && old.parentNode) old.parentNode.removeChild(old);
+      } catch (_) {}
+    }, 60);
+
     var f = makeFrame("heart/index.html?music=parent", "Trái tim yêu thương");
     f.style.zIndex = "2";
-    host.appendChild(f);
-    f.addEventListener("load", function () {
+    // Chờ trái tim dựng xong scene mới hiện, tránh thấy khung đen nhấp nháy.
+    var shown = false;
+    function reveal() {
+      if (shown) return;
+      shown = true;
       fadeInFrame(f);
-      window.setTimeout(function () {
-        try {
-          if (old && old.parentNode) old.parentNode.removeChild(old);
-        } catch (_) {}
-      }, 600);
+    }
+    window.addEventListener("message", function (e) {
+      if (e.data && e.data.type === "lovegift:heartReady") reveal();
     });
+    f.addEventListener("load", function () {
+      window.setTimeout(reveal, 400);
+    });
+    window.setTimeout(reveal, 4000);
+    host.appendChild(f);
   }
 
   // Nhận tín hiệu "giữ để bắt đầu" xong từ phần intro
